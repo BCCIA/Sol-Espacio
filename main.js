@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const videoElement = document.getElementById('playback-video');
 
     if (!overlay || !btnShowAvatar || !btnPlayVideo || !videoElement) return;
-    const VIDEO_URL = "https://www.dropbox.com/scl/fi/ff0ec6i5q92dp3qoepz6d/Foto-espacial.mp4?rlkey=0if4aqvw00pxt5o4q83ua45p1&st=ziy6a2km&raw=1";
+    const VIDEO_URL = "https://www.dropbox.com/scl/fi/hw6dmz62avnx69ntwboas/Sol-Foto.mp4?rlkey=3idrt2fxrbinhmq8rx2gxbac0&st=294w4v5u&dl&raw=1";
     videoElement.src = VIDEO_URL;
 
     function showOverlay() {
