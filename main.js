@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Si es por inactividad, borramos el permiso para que pida PIN al volver
           localStorage.removeItem(STORAGE_KEY_AUTH);
           location.reload();
-      }, 5 * 60 * 1000); // 5 minutos
+      }, 30 * 60 * 1000); // 30 minutos
   }
   if (accesoPermitido()) {
      ['click', 'touchstart', 'mousemove', 'keydown'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
