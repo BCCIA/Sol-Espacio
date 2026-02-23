@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --first-color: #1f65c2;
+  --black-color: #000;
+  --white-color: #fff;
+  --body-font: "Poppins", sans-serif;
+  --h1-font-size: 2.5rem;
+  --h2-font-size: 1rem;
+  --normal-font-size: 0.93rem;
+  --small-font-size: 0.81rem;
+  --z-back: -10;
+  --z-normal: 1;
+  --z-tooltip: 10;
+  --z-fixed: 100;
+  --z-modal: 1000;
+  --header-height: 3rem;
+  --font-bold: 700;
+}
+
+*, ::before, ::after { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; list-style: none; }
+body { font-family: var(--body-font); background-color: var(--black-color); color: var(--white-color); font-weight: var(--font-bold); overflow: hidden; }
+
+/* Ajuste del contenedor principal */
+#chat-container {
+  width: 75%; max-width: 1100px; height: 75vh; min-height: 600px;
+  position: relative; overflow: hidden;
+  background: rgba(255, 255, 255, 0.9); border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#chat-container:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45); }
+.iframe-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; width: 100%; }
+.did-chat-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+img { max-width: 100%; height: auto; }
+.bd-grid { max-width: 1400px; margin-left: 1rem; margin-right: 1rem; }
+.l-main { height: 100vh; background-color: var(--black-color); display: flex; align-items: center; }
+.home { display: grid; grid-template-columns: 1fr 1.5fr; align-items: center; width: 100%; height: 100%; padding: 0 5%; gap: 2rem;}
+.home-information { padding-left: 1.5rem; border-left: 5px solid var(--white-color); z-index: var(--z-tooltip); }
+.home-pressent { font-size: 1.5rem; }
+.home-title { font-size: 5rem; line-height: 1.1; }
+.home-img { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+.overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: var(--z-modal); }
+.first { background-color: var(--first-color); }
+.second { background-color: var(--first-color); left: 33.3%; }
+.third { background-color: var(--first-color); left: 66.6%; }
+
+@media screen and (max-width: 1024px) {
+    .home { grid-template-columns: 1fr; grid-template-rows: max-content 1fr; gap: 2rem; padding-top: 2rem;}
+    .home-img { align-items: flex-start; }
+    #chat-container { width: 90%; height: 65vh; }
+    .home-title { font-size: 3.5rem; }
+}
+
+/* =========================================
+   ESTILOS: CONTROL Y BLOQUEO
+   ========================================= */
+/* Capa invisible para detectar clic inicial */
+#lock-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 100; background: transparent; cursor: pointer;
+}
+#lock-overlay.unlocked { display: none; pointer-events: none; }
+
+/* Botones de control esquina superior derecha */
+.control-buttons {
+    position: fixed; top: 30px; right: 30px; display: flex; gap: 15px; z-index: 9999;
+}
+.ctrl-icon {
+    font-size: 40px; color: rgba(255, 255, 255, 0.7); cursor: pointer;
+    transition: all 0.3s ease; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+}
+.ctrl-icon:hover { color: white; transform: scale(1.1); }
+#refresh-btn:hover { transform: rotate(45deg) scale(1.1); }
+
+/* =========================================
+   ESTILOS: MODAL DE PIN (Contraseña oculta)
+   ========================================= */
+.pin-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); z-index: 11000;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; pointer-events: none; transition: all 0.4s ease;
+}
+.pin-modal.active { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.pin-modal-content {
+    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2); padding: 40px; border-radius: 20px;
+    text-align: center; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    transform: translateY(30px); transition: transform 0.4s ease;
+}
+.pin-modal.active .pin-modal-content { transform: translateY(0); }
+
+.pin-icon { font-size: 3rem; color: var(--first-color); margin-bottom: 1rem; }
+.pin-modal-content h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.pin-modal-content p { margin-bottom: 1.5rem; opacity: 0.8; }
+
+#pin-input {
+    width: 100%; padding: 15px; font-size: 1.5rem; text-align: center;
+    border: none; border-radius: 10px; margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.9); color: #333; letter-spacing: 5px;
+    outline: none; transition: box-shadow 0.3s;
+}
+#pin-input:focus { box-shadow: 0 0 0 3px rgba(31, 101, 194, 0.5); }
+.pin-btn {
+    width: 100%; padding: 15px; border: none; border-radius: 10px;
+    background: var(--first-color); color: white; font-size: 1.1rem; font-weight: 600;
+    cursor: pointer; transition: background 0.3s;
+}
+.pin-btn:hover { background: #164a91; }
+
+
+/* =========================================
+   ESTILOS MINIMALISTAS (Overlay y Video)
+   ========================================= */
+.interaction-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(20, 20, 20, 0.25); backdrop-filter: blur(8px);
+  border-radius: inherit; display: flex; justify-content: center; align-items: center;
+  z-index: 50; transition: all 0.6s ease-in-out;
+}
+/* Se usa z-index negativo para permitir clics en el avatar cuando se oculta */
+.overlay-hidden { opacity: 0; z-index: -1 !important; pointer-events: none; }
+
+.interaction-content {
+  text-align: center; color: var(--white-color); width: 100%;
+  display: flex; flex-direction: column; align-items: center; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.overlay-avatar-img {
+    max-height: 180px; width: auto; margin-bottom: 1.5rem; opacity: 0.85;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2)); transition: transform 0.3s ease;
+}
+.interaction-content:hover .overlay-avatar-img { transform: translateY(-5px) scale(1.02); opacity: 1; }
+.interaction-content h3 { font-size: 1.8rem; margin-bottom: 2.5rem; font-weight: 500; letter-spacing: 1px; }
+.interaction-buttons { display: flex; flex-direction: row; gap: 30px; justify-content: center; width: 80%; }
+
+.glass-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  width: 140px; height: 120px; padding: 15px;
+  background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); backdrop-filter: blur(5px);
+  font-family: var(--body-font); font-size: 0.9rem; font-weight: 500; color: white;
+  cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+}
+.glass-btn ion-icon { font-size: 2.5rem; opacity: 0.9; }
+.glass-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-5px); box-shadow: 0 8px 25px rgba(31, 101, 194, 0.3); border-color: rgba(255, 255, 255, 0.5); }
+.glass-btn:active { transform: translateY(-2px); background: rgba(255, 255, 255, 0.1); }
+
+@media screen and (max-width: 768px) {
+    .interaction-buttons { flex-direction: column; align-items: center; gap: 15px; }
+    .glass-btn { width: 80%; height: auto; flex-direction: row; padding: 15px 25px; border-radius: 50px; }
+    .glass-btn ion-icon { font-size: 1.5rem; }
+    .interaction-content h3 { font-size: 1.4rem; }
+    .overlay-avatar-img { max-height: 120px; margin-bottom: 1rem; }
+}
+
+/* --- Reproductor de Video (Con Fixes para Edge) --- */
+.playback-video {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; border-radius: inherit; z-index: 40;
+    background: #000; pointer-events: none;
+    /* ✅ FIXES PARA EDGE/CHROME: Fuerza aceleración por hardware ✅ */
+    transform: translateZ(0); -webkit-transform: translateZ(0);
+    will-change: opacity, visibility; backface-visibility: hidden;
+}
+/* ✅ SOLUCIÓN CSS EDGE: Ocultar suavemente sin romper el renderizado de video */
+.video-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important; /* Evita clics fantasmas */
+    /* No usamos display: none para que el navegador ya tenga el video "preparado" gráficamente */
+}

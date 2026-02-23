@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sol</title>
+    <link rel="shortcut icon" href="./chat.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ✅ NUEVO: MODAL DE PIN PERSONALIZADO (Reemplaza al prompt nativo) ✅ -->
+    <div id="pin-modal" class="pin-modal">
+        <div class="pin-modal-content glass-effect">
+            <ion-icon name="lock-closed" class="pin-icon"></ion-icon>
+            <h3>Acceso Restringido</h3>
+            <p>Introduce el PIN para continuar</p>
+            <!-- Input tipo password para que salgan asteriscos -->
+            <input type="password" id="pin-input" placeholder="••••" maxlength="4" autocomplete="off">
+            <button id="pin-submit-btn" class="pin-btn">Desbloquear</button>
+        </div>
+    </div>
+
+    <!-- Animaciones de entrada GSAP -->
+    <div class="overlay first"></div>
+    <div class="overlay second"></div>
+    <div class="overlay third"></div>
+
+    <main class="l-main bd-grid">
+      <div class="home">
+        <div class="home-information">
+          <span class="home-pressent anime-text">Mi nombre es</span>
+          <h1 class="home-title anime-text">Sol.</h1>
+        </div>
+
+        <div class="home-img">
+            <div id="chat-container" class="fade-in">
+                <!-- Capa de bloqueo invisible (al hacer clic abre el modal) -->
+                <div id="lock-overlay" title="Toque para iniciar sesión"></div>
+
+                <!-- --- ELEMENTOS INTERACTIVOS --- -->
+                <div id="interaction-overlay" class="interaction-overlay">
+                    <div class="interaction-content">
+                        <img src="./avatar-preview.png" alt="Avatar Preview" class="overlay-avatar-img">
+                        <h3>Hola, selecciona una opción:</h3>
+                        <div class="interaction-buttons">
+                            <button id="btn-show-avatar" class="interact-btn glass-btn">
+                                <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+                                Conversar
+                            </button>
+                            <button id="btn-play-video" class="interact-btn glass-btn">
+                                <ion-icon name="camera-outline"></ion-icon>
+                                Foto con Sol
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <video id="playback-video" class="playback-video video-hidden" playsinline></video>
+            </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Botones de Control -->
+    <div class="control-buttons">
+      <ion-icon id="lock-btn" class="ctrl-icon" name="lock-closed-outline" title="Bloquear sesión"></ion-icon>
+      <ion-icon id="refresh-btn" class="ctrl-icon" name="refresh-circle-outline" title="Limpiar caché y recargar"></ion-icon>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
